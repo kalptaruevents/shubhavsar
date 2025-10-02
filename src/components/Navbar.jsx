@@ -15,7 +15,6 @@ export default function Navbar() {
         <li><a href="#testimonials" className="hover:underline">Testimonials</a></li>
         <li><a href="#contact" className="hover:underline">Contact</a></li>
       </ul>
-
     </nav>
   );
 }
