@@ -83,20 +83,6 @@ function ServicePanel({ position, color, title, description, image }) {
   );
 }
 
-// Background gradient plane
-function BackgroundGradient() {
-  const meshRef = useRef();
-  useFrame(() => {
-    if (meshRef.current) meshRef.current.rotation.y += 0.0003;
-  });
-  return (
-    <mesh ref={meshRef} position={[0, 0, -30]}>
-      <planeGeometry args={[200, 200]} />
-      <meshBasicMaterial attach="material" side={THREE.DoubleSide} color="#FFF5E1" />
-    </mesh>
-  );
-}
-
 export default function Services3D() {
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
 
@@ -147,8 +133,10 @@ export default function Services3D() {
       </h2>
 
       {/* ================== 3D Canvas ================== */}
-      <Canvas camera={{ position: [0, 3, 14], fov: 55 }}>
-        <BackgroundGradient />
+      <Canvas
+        camera={{ position: [0, 3, 14], fov: 55 }}
+        style={{ background: "transparent" }} // Transparent canvas
+      >
         <ambientLight intensity={0.7} />
         <directionalLight position={[5, 5, 5]} intensity={1.2} />
         <Suspense fallback={null}>
