@@ -8,17 +8,23 @@ export default function Navbar() {
 
   return (
     <nav className="w-full flex items-center justify-between p-4 md:p-6 bg-gradient-to-l from-pink-600 via-yellow-400 to-yellow-300 shadow-lg fixed top-0 z-50">
-      <div className="flex items-center space-x-3 cursor-pointer group">
+      
+      {/* Logo + Sparkling Text */}
+      <div className="flex items-center space-x-3 cursor-pointer">
         <img
           src={Logo}
           alt="Shubh Avsar Logo"
           className="w-12 md:w-16 transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110"
         />
-        <span className="text-white font-dancing text-2xl md:text-3xl tracking-wide group-hover:text-yellow-100 transition-colors">
+        <h1
+          style={{ fontFamily: "'Carattere', cursive" }}
+          className="text-white text-3xl md:text-4xl tracking-wide relative inline-block sparkle-text"
+        >
           Shubh Avsar
-        </span>
+        </h1>
       </div>
 
+      {/* Desktop Menu */}
       <ul className="hidden md:flex space-x-6 font-medium text-white drop-shadow-md">
         {menuItems.map((item) => (
           <li key={item}>
@@ -32,11 +38,20 @@ export default function Navbar() {
         ))}
       </ul>
 
-      <button className="md:hidden text-white text-3xl" onClick={() => setMenuOpen(!menuOpen)}>
+      {/* Mobile Menu Toggle */}
+      <button
+        className="md:hidden text-white text-3xl"
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
         {menuOpen ? <FiX /> : <FiMenu />}
       </button>
 
-      <div className={`absolute top-20 left-0 w-full bg-gradient-to-l from-pink-600 via-yellow-400 to-yellow-300 shadow-lg md:hidden transition-all duration-500 ease-in-out ${menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 overflow-hidden"}`}>
+      {/* Mobile Menu */}
+      <div
+        className={`absolute top-20 left-0 w-full bg-gradient-to-l from-pink-600 via-yellow-400 to-yellow-300 shadow-lg md:hidden transition-all duration-500 ease-in-out ${
+          menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+        }`}
+      >
         <ul className="flex flex-col items-center py-6 space-y-4 font-medium text-white drop-shadow-md">
           {menuItems.map((item) => (
             <li key={item}>
@@ -51,6 +66,24 @@ export default function Navbar() {
           ))}
         </ul>
       </div>
+
+      {/* Sparkle Animation */}
+      <style>
+        {`
+          @keyframes sparkle {
+            0%, 100% { text-shadow: 0 0 5px #fff, 0 0 10px #ffd700; }
+            50% { text-shadow: 0 0 10px #fff, 0 0 20px #ffdf70; }
+          }
+          .sparkle-text {
+            animation: sparkle 2s infinite;
+            transition: transform 0.3s ease-in-out;
+          }
+          .sparkle-text:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 15px #fff, 0 0 25px #ffd700;
+          }
+        `}
+      </style>
     </nav>
   );
 }
