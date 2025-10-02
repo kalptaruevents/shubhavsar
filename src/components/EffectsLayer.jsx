@@ -1,54 +1,100 @@
-import React, { useRef, useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Sparkles, OrbitControls } from "@react-three/drei";
-import confetti from "canvas-confetti";
+
+
+import React, { useEffect, useRef } from "react";
 
 export default function EffectsLayer() {
-  const canvasRef = useRef();
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    // Trigger confetti on page load
-    confetti({
-      particleCount: 150,
-      spread: 70,
-      origin: { y: 0.6 },
-      gravity: 0.8,
-    });
+    const container = containerRef.current;
 
-    // Repeat small bursts every few seconds
-    const interval = setInterval(() => {
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { x: Math.random(), y: 0 },
-      });
-    }, 4000);
+    // --- Confetti flowers ---
+    for (let i = 0; i < 50; i++) {
+      const confetti = document.createElement("div");
+      confetti.className = "confetti";
+      confetti.style.left = `${Math.random() * 100}%`;
+      confetti.style.animationDelay = `${Math.random() * 5}s`;
+      container.appendChild(confetti);
+    }
 
-    return () => clearInterval(interval);
+    // --- Smoke bubbles / dry ice mist ---
+    for (let i = 0; i < 15; i++) {
+      const smoke = document.createElement("div");
+      smoke.className = "smoke-bubble";
+      smoke.style.left = `${Math.random() * 100}%`;
+      smoke.style.top = `${Math.random() * 80 + 10}%`;
+      container.appendChild(smoke);
+    }
+
+    // --- Follow lights ---
+    const light = document.createElement("div");
+    light.className = "follow-light";
+    container.appendChild(light);
+
+    const handleMouseMove = (e) => {
+      light.style.left = e.clientX + "px";
+      light.style.top = e.clientY + "px";
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-40">
-      {/* Canvas for Three.js effects */}
-      <Canvas ref={canvasRef} camera={{ position: [0, 0, 10], fov: 75 }}>
-        {/* Sparkles for dry ice / wedding magical effect */}
-        <Sparkles
-          count={200}
-          scale={5}
-          size={2}
-          speed={0.5}
-          color="white"
-          opacity={0.6}
-        />
-        <OrbitControls enableZoom={false} enableRotate={false} />
-      </Canvas>
+    <div
+      ref={containerRef}
+      className="pointer-events-none fixed inset-0 z-40 overflow-hidden"
+    >
+      <style>
+        {`
+        /* Confetti petals */
+        .confetti {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          background: linear-gradient(to bottom, #FFD700, #FF69B4);
+          border-radius: 50% 50% 50% 50%;
+          opacity: 0.8;
+          animation: confetti-fall 6s linear infinite;
+        }
+        @keyframes confetti-fall {
+          0% { transform: translateY(-50px) rotate(0deg); opacity:1; }
+          100% { transform: translateY(120vh) rotate(360deg); opacity:0; }
+        }
 
-      {/* Smoke / bubbles layer with CSS */}
-      <div className="absolute inset-0">
-        <div className="absolute w-64 h-64 bg-white/20 rounded-full blur-3xl animate-pulse -top-32 left-1/4"></div>
-        <div className="absolute w-48 h-48 bg-white/10 rounded-full blur-2xl animate-pulse -bottom-16 right-1/3"></div>
-        <div className="absolute w-32 h-32 bg-white/30 rounded-full blur-xl animate-pulse top-1/2 left-1/2"></div>
-      </div>
+        /* Smoke bubbles / dry ice */
+        .smoke-bubble {
+          position: absolute;
+          width: 50px;
+          height: 50px;
+          background: radial-gradient(circle, rgba(200,200,200,0.3) 0%, rgba(255,255,255,0) 70%);
+          border-radius: 50%;
+          animation: smoke-rise 8s linear infinite;
+        }
+        @keyframes smoke-rise {
+          0% { transform: translateY(100%); opacity:0.2; }
+          50% { opacity:0.5; }
+          100% { transform: translateY(-20%); opacity:0; }
+        }
+
+        /* Follow light (mouse spotlight) */
+        .follow-light {
+          position: fixed;
+          width: 200px;
+          height: 200px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+          pointer-events: none;
+          transform: translate(-50%, -50%);
+          transition: left 0.05s, top 0.05s;
+        }
+
+        `}
+      </style>
     </div>
   );
 }
+
